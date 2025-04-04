@@ -9,7 +9,7 @@ const serverConfig = getServerSideConfig();
 export async function handle(
   req: NextRequest,
   { params }: { params: { provider: string; path: string[] } },
-) {
+  {
   console.log("[Google Route] params ", params);
 
   if (req.method === "OPTIONS") {
@@ -130,4 +130,3 @@ async function request(req: NextRequest, apiKey: string) {
   } finally {
     clearTimeout(timeoutId);
   }
-}
