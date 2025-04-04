@@ -9,7 +9,7 @@ const serverConfig = getServerSideConfig();
 export async function handle(
   req: NextRequest,
   { params }: { params: { provider: string; path: string[] } },
-  {
+) {
   console.log("[Google Route] params ", params);
 
   if (req.method === "OPTIONS") {
@@ -101,13 +101,10 @@ async function request(req: NextRequest, apiKey: string) {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
-      "x-goog-api-key":
-        req.headers.get("x-goog-api-key") ||
-        (req.headers.get("Authorization") ?? "").replace("Bearer ", ""),
+      "x-goog-api-key": apiKey,
     },
     method: req.method,
     body: req.body,
-    // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
@@ -116,10 +113,8 @@ async function request(req: NextRequest, apiKey: string) {
 
   try {
     const res = await fetch(fetchUrl, fetchOptions);
-    // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
-    // to disable nginx buffering
     newHeaders.set("X-Accel-Buffering", "no");
 
     return new Response(res.body, {
@@ -130,3 +125,4 @@ async function request(req: NextRequest, apiKey: string) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
