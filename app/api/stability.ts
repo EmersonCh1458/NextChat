@@ -27,9 +27,9 @@ export async function handle(
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  let path = "v2beta/stable-image/generate/ultra";
+  let path = `${req.nextUrl.pathname}`.replaceAll("/api/stability/", "");
 
-  console.log("[Stability Proxy] Using fixed path:", path);
+  console.log("[Stability Proxy] ", path);
   console.log("[Stability Base Url]", baseUrl);
 
   const timeoutId = setTimeout(

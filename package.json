@@ -21,6 +21,7 @@
     "test:ci": "node --no-warnings --experimental-vm-modules $(yarn bin jest) --ci"
   },
   "dependencies": {
+    "react-cookie": "^4.1.1",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@modelcontextprotocol/sdk": "^1.0.4",
@@ -43,6 +44,7 @@
     "node-fetch": "^3.3.1",
     "openapi-client-axios": "^7.5.5",
     "react": "^18.2.0",
+    "react-cookie": "^8.0.1",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.15.0",
