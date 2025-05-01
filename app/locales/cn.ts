@@ -59,6 +59,9 @@ const cn = {
       Speech: "朗读",
       StopSpeech: "停止",
     },
+    Images: {
+      Rendering: "图片渲染中...",
+    },
     Commands: {
       new: "新建聊天",
       newm: "从面具新建聊天",

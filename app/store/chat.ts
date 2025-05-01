@@ -63,6 +63,8 @@ export type ChatMessage = RequestMessage & {
   tools?: ChatMessageTool[];
   audio_url?: string;
   isMcpResponse?: boolean;
+  base64Images?: string[]; // 新增base64图片支持
+  rendering?: boolean; // 新增渲染状态
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {

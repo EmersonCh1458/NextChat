@@ -1967,13 +1967,14 @@ function _Chat() {
                             </div>
                           )}
                           {/* 处理Gemini混合输出（文本+图片） */}
-                          {message.model?.includes("gemini") && getMessageImages(message).length > 0 ? (
+                          {message.model?.includes("gemini") &&
+                          getMessageImages(message).length > 0 ? (
                             <div className={styles["gemini-response"]}>
                               {/* 先渲染文本部分 */}
                               {message.content && (
                                 <div className={styles["gemini-text"]}>
-                                  <Markdown 
-                                    content={getMessageTextContent(message)} 
+                                  <Markdown
+                                    content={getMessageTextContent(message)}
                                     fontSize={fontSize}
                                     fontFamily={fontFamily}
                                     parentRef={scrollRef}
@@ -1981,15 +1982,20 @@ function _Chat() {
                                   />
                                 </div>
                               )}
-                              
+
                               {/* 再渲染图片部分 */}
                               <div className={styles["gemini-images"]}>
                                 {getMessageImages(message).map((img, i) => (
-                                  <div key={i} className={styles["gemini-image-container"]}>
-                                    <img 
-                                      src={img} 
-                                      alt={`Gemini生成图片 ${i+1}`}
-                                      className={styles["gemini-generated-image"]}
+                                  <div
+                                    key={i}
+                                    className={styles["gemini-image-container"]}
+                                  >
+                                    <img
+                                      src={img}
+                                      alt={`Gemini生成图片 ${i + 1}`}
+                                      className={
+                                        styles["gemini-generated-image"]
+                                      }
                                     />
                                   </div>
                                 ))}
@@ -2022,32 +2028,69 @@ function _Chat() {
                                   alt=""
                                 />
                               )}
-                              {getMessageImages(message).length > 1 && (
+                              {(getMessageImages(message).length > 0 ||
+                                message.base64Images?.length) && (
                                 <div
                                   className={styles["chat-message-item-images"]}
                                   style={
                                     {
-                                      "--image-count":
+                                      "--image-count": Math.max(
                                         getMessageImages(message).length,
+                                        message.base64Images?.length || 0,
+                                      ),
                                     } as React.CSSProperties
                                   }
                                 >
-                                  {getMessageImages(message).map(
-                                    (image, index) => {
-                                      return (
-                                        <img
-                                          className={
-                                            styles[
-                                              "chat-message-item-image-multi"
-                                            ]
-                                          }
-                                          key={index}
-                                          src={image}
-                                          alt=""
-                                        />
-                                      );
-                                    },
+                                  {message.rendering && (
+                                    <div
+                                      className={styles["image-rendering-mask"]}
+                                    >
+                                      <LoadingIcon />
+                                      <span>
+                                        {Locale.Chat.Images.Rendering}
+                                      </span>
+                                    </div>
                                   )}
+                                  {getMessageImages(message).map(
+                                    (image, index) => (
+                                      <img
+                                        className={
+                                          styles[
+                                            "chat-message-item-image-multi"
+                                          ]
+                                        }
+                                        key={`url-${index}`}
+                                        src={image}
+                                        alt=""
+                                      />
+                                    ),
+                                  )}
+                                  {message.base64Images?.map((image, index) => (
+                                    <img
+                                      className={
+                                        styles["chat-message-item-image-multi"]
+                                      }
+                                      key={`base64-${index}`}
+                                      src={`data:image/png;base64,${image}`}
+                                      alt=""
+                                      onLoad={() => {
+                                        chatStore.updateTargetSession(
+                                          chatStore.currentSession(),
+                                          (session) => {
+                                            const msg = session.messages.find(
+                                              (m) => m.id === message.id,
+                                            );
+                                            if (msg) {
+                                              msg.rendering = false;
+                                              if (msg.streaming) {
+                                                msg.streaming = false;
+                                              }
+                                            }
+                                          },
+                                        );
+                                      }}
+                                    />
+                                  ))}
                                 </div>
                               )}
                             </div>
